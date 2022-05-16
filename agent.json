@@ -1,0 +1,36 @@
+{
+    "$schema": "http://www.lavishsoft.com/schema/agent.json",
+    "name": "Window Layout Engine",
+    "version": "20220516.1",
+    "minimumBuild": 6929,
+    "platforms": {
+        "joe multiboxer uplink": {
+            "eventHandlers": {
+                "onAgentStartup": {
+                    "code": [
+                        "run WindowLayoutEngine.Uplink.iss"
+                    ]
+                },
+                "onAgentShutdown": {
+                    "code": [
+                        "endscript WindowLayoutEngine.Uplink"
+                    ]
+                }
+            }
+        },
+        "joe multiboxer session": {
+            "eventHandlers": {
+                "onAgentStartup": {
+                    "code": [
+                        "run WindowLayoutEngine.Session.iss"
+                    ]
+                },
+                "onAgentShutdown": {
+                    "code": [
+                        "endscript WindowLayoutEngine.Session"
+                    ]
+                }
+            }
+        }
+    }
+}

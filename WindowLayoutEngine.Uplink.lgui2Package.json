@@ -1,0 +1,136 @@
+{
+    "$schema": "http://www.lavishsoft.com/schema/lgui2Package.json",
+    "templates":{
+        "windowLayoutEngine.regionView":{
+            "jsonTemplate":"mapitemview",
+            "type":"mapitemview",
+            "virtualAlignment":"corner",
+            "virtualSizeBinding":{
+                "pullFormat":"${This.Context.Data.Get[width]},${This.Context.Data.Get[height]}"
+            },
+            "virtualLocationBinding":{
+                "pullFormat":"${This.Context.Data.Get[x]},${This.Context.Data.Get[y]}"
+            },
+            "backgroundBrush":{
+                "color":"#000000"
+            },
+            "borderThickness":[2,2,2,2],
+            "borderBrush":{
+                "color":"#ffffff"
+            },
+            "content":{
+                "type":"textblock",
+                "text":"${This.Context.Data.Get[numRegion]}"
+            }
+        },
+        "windowLayoutEngine.screenView":{
+            "jsonTemplate":"mapitemview",
+            "type":"mapitemview",
+            "virtualAlignment":"corner",
+            "virtualSizeBinding":{
+                "pullFormat":"${This.Context.Data.Get[width]},${This.Context.Data.Get[height]}"
+            },
+            "virtualLocationBinding":{
+                "pullFormat":"${This.Context.Data.Get[x]},${This.Context.Data.Get[y]}"
+            },
+            "backgroundBrush":{
+                "color":"#0000FF"
+            },
+            "borderThickness":[2,2,2,2],
+            "borderBrush":{
+                "color":"#ffffff"
+            },
+            "strata": 0.4
+        },        
+        "windowLayoutEngine.layoutView":{
+            "jsonTemplate":"listboxitem",
+            "padding":2,
+            "content":{
+                "type":"dockpanel",
+                "horizontalAlignment":"stretch",
+                "children":[
+                    {
+                        "_dock":"left",
+                        "type":"textblock",
+                        "text":"Layout ${This.Context.Index}: "
+                    },
+                    {
+                        "_dock":"left",
+                        "type":"textblock",
+                        "text":"${This.Context.Data.Get[name]}"
+                    },
+                    {
+                        "_dock":"right",
+                        "type":"map",
+                        "width":400,
+                        "height":200,
+                        "fixedAspectRatio":true,
+                        "virtualLocation":[0,0],
+                        "virtualSize":[1920,1080],
+                        "virtualAlignment":"corner",
+                        "content":{
+                            "jsonTemplate":"map.content",
+                            "backgroundBrush":{
+                                "color":"#222222"
+                            }    
+                        },
+                        "itemsBinding":{
+                            "pullFormat":"${WLEngine.GetPreviewItems[${This.Context.Index},${This.ID}]}"
+                        },
+                        "itemViewGenerators":{
+                            "screen":{
+                                "type":"template",
+                                "template":"windowLayoutEngine.screenView"
+                            },
+                            "region":{
+                                "type":"template",
+                                "template":"windowLayoutEngine.regionView"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    "elements":[
+        {
+            "type":"panel",
+            "visibility": "hidden",
+            "name":"windowLayoutEngine.events"
+        },
+        {
+            "type":"window",
+            "name":"windowLayoutEngine.mainWindow",
+            "title":"Joe Multiboxer: Window Layout Engine Development",
+            "hideOnClose": true,
+            "horizontalAlignment": "center",
+            "verticalAlignment": "center",
+            "width":500,
+            "height":300,
+            "content":{
+                "type":"dockpanel",
+                "horizontalAlignment": "stretch",
+                "verticalAlignment": "stretch",                
+                "children":[
+                    {
+                        "type":"listbox",
+                        "contentContainer":{
+                            "jsonTemplate":"listbox.contentContainerFitWidth"
+                        },
+                        "horizontalAlignment":"stretch",
+                        "verticalAlignment":"stretch",
+                        "itemsBinding":{
+                            "pullFormat":"${WLEngine.Layouts}"
+                        },
+                        "itemViewGenerators":{
+                            "default":{
+                                "type":"template",
+                                "template":"windowLayoutEngine.layoutView"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
