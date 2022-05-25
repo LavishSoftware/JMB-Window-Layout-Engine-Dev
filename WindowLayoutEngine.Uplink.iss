@@ -204,7 +204,7 @@ objectdef windowLayoutEngine
             "leaveHole":true,
             "edge":"bottom",
             "rows":4,
-            "columns":2
+            "columns":2,
             "monitors":[
                 ${Display.Monitor.AsJSON~},
                 ${monitor2.AsJSON~}                
