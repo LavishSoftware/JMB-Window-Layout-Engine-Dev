@@ -20,6 +20,7 @@ objectdef windowLayoutGenerators
     variable windowLayoutGenerator_Stacked Stacked    
     variable windowLayoutGenerator_ScreenPer ScreenPer    
     variable windowLayoutGenerator_Tile Tile    
+    variable windowLayoutGenerator_Grid Grid
 
     variable collection:weakref Generators
 
@@ -29,6 +30,7 @@ objectdef windowLayoutGenerators
         Generators:Set["${Stacked~}",Stacked]
         Generators:Set["${ScreenPer~}",ScreenPer]
         Generators:Set["${Tile~}",Tile]
+        Generators:Set["${Grid~}",Grid]
 ;        Generators:Set["${Horizontal~}",Horizontal]
 ;        Generators:Set["${Vertical~}",Vertical]
     }
@@ -489,9 +491,6 @@ objectdef windowLayoutGenerator_Tile inherits windowLayoutGenerator_Common
         variable uint smallHeight
         variable uint smallWidth            
 
-        variable int posX
-        variable int posY
-
         smallWidth:Set["${monitorWidth}/${squareSize}"]
         smallHeight:Set["${monitorHeight}/${squareSize}"]
 
@@ -522,6 +521,75 @@ objectdef windowLayoutGenerator_Tile inherits windowLayoutGenerator_Common
 
             if ${numSlot} > ${numSlots}
                 break
+        }
+
+        return ja
+    }
+}
+
+
+objectdef windowLayoutGenerator_Grid inherits windowLayoutGenerator_Common
+{
+    method Initialize()
+    {
+        Name:Set[Grid]
+        Description:Set["Generates a layout where all windows are tiled within a specified grid"]
+    }
+
+    member:jsonvalueref GenerateRegions_Subclass(jsonvalueref joInput)
+    {
+        variable jsonvalue ja="[]"
+        variable jsonvalue joRegion
+
+
+        variable uint gridSizeX=${joInput.GetInteger[columns]}
+        variable uint gridSizeY=${joInput.GetInteger[rows]}
+        if ${gridSizeX}<1
+            gridSizeX:Set[1]
+        if ${gridSizeY}<1
+            gridSizeY:Set[1]
+        
+        echo Grid size ${gridSizeX}x${gridSizeY}
+
+        variable uint nX
+        variable uint nY
+
+        variable uint smallHeight
+        variable uint smallWidth            
+
+        smallWidth:Set["${monitorWidth}/${gridSizeX}"]
+        smallHeight:Set["${monitorHeight}/${gridSizeY}"]
+
+        variable uint numSlot
+
+        joRegion:SetValue["$$>
+            {
+                "x":${monitorX},
+                "y":${monitorY},
+                "width":${smallWidth},
+                "height":${smallHeight}
+            }
+        <$$"]
+
+        while ${numSlot} <= ${numSlots}
+        {
+            for (nY:Set[0] ; ${nY} < ${gridSizeY} ; nY:Inc )
+            {
+                for (nX:Set[0] ; ${nX} < ${gridSizeX} ; nX:Inc )
+                {
+                    numSlot:Inc
+                    if ${numSlot} > ${numSlots}
+                        break
+                    joRegion:SetInteger[x,${monitorX.Inc[${nX} * ${smallWidth}]}]
+                    joRegion:SetInteger[y,${monitorY.Inc[${nY} * ${smallHeight}]}]
+                    joRegion:SetInteger[numRegion,${numSlot}]
+                    ja:Add["${joRegion~}"]
+
+                }
+
+                if ${numSlot} > ${numSlots}
+                    break
+            }
         }
 
         return ja

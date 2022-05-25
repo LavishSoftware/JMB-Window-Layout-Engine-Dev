@@ -126,7 +126,9 @@ objectdef windowLayoutEngine
             ],
             "avoidTaskbar":false,
             "leaveHole":true,
-            "edge":"bottom"
+            "edge":"bottom",
+            "rows":4,
+            "columns":2
         }
         <$$"]
 
@@ -140,7 +142,10 @@ objectdef windowLayoutEngine
 
         This:AddLayout["Stacked","Stacked",testData,"${Generators.Stacked.GenerateRegions["testData"]~}"]
 
+
         This:AddLayout["Tile","Tile",testData,"${Generators.Tile.GenerateRegions["testData"]~}"]
+
+        This:AddLayout["Grid","Grid",testData,"${Generators.Grid.GenerateRegions["testData"]~}"]
 
         variable jsonvalue joNextMonitor
         joNextMonitor:SetValue["$$>
