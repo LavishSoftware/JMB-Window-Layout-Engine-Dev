@@ -23,6 +23,30 @@
                 "text":"${This.Context.Data.Get[numRegion]}"
             }
         },
+        "windowLayoutEngine.regionView1":{
+            "jsonTemplate":"windowLayoutEngine.regionView",
+            "backgroundBrush":{
+                "color":"#996666"
+            }            
+        },
+        "windowLayoutEngine.regionView2":{
+            "jsonTemplate":"windowLayoutEngine.regionView",
+            "backgroundBrush":{
+                "color":"#669966"
+            }            
+        },
+        "windowLayoutEngine.regionView3":{
+            "jsonTemplate":"windowLayoutEngine.regionView",
+            "backgroundBrush":{
+                "color":"#666699"
+            }            
+        },
+        "windowLayoutEngine.regionView4":{
+            "jsonTemplate":"windowLayoutEngine.regionView",
+            "backgroundBrush":{
+                "color":"#996699"
+            }            
+        },
         "windowLayoutEngine.screenView":{
             "jsonTemplate":"mapitemview",
             "type":"mapitemview",
@@ -31,7 +55,7 @@
                 "pullFormat":"${This.Context.Data.Get[width]},${This.Context.Data.Get[height]}"
             },
             "virtualLocationBinding":{
-                "pullFormat":"${This.Context.Data.Get[x]},${This.Context.Data.Get[y]}"
+                "pullFormat":"${This.Context.Data.Get[left]},${This.Context.Data.Get[top]}"
             },
             "backgroundBrush":{
                 "color":"#0000FF"
@@ -85,6 +109,22 @@
                             "region":{
                                 "type":"template",
                                 "template":"windowLayoutEngine.regionView"
+                            },
+                            "region1":{
+                                "type":"template",
+                                "template":"windowLayoutEngine.regionView1"
+                            },
+                            "region2":{
+                                "type":"template",
+                                "template":"windowLayoutEngine.regionView2"
+                            },
+                            "region3":{
+                                "type":"template",
+                                "template":"windowLayoutEngine.regionView3"
+                            },
+                            "region4":{
+                                "type":"template",
+                                "template":"windowLayoutEngine.regionView4"
                             }
                         }
                     }

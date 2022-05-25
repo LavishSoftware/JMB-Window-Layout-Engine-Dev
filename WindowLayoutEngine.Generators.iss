@@ -21,6 +21,7 @@ objectdef windowLayoutGenerators
     variable windowLayoutGenerator_ScreenPer ScreenPer    
     variable windowLayoutGenerator_Tile Tile    
     variable windowLayoutGenerator_Grid Grid
+    variable windowLayoutGenerator_Combo Combo
 
     variable collection:weakref Generators
 
@@ -140,6 +141,56 @@ objectdef windowLayoutGenerator_Common inherits windowLayoutGenerator
         }
 
         return "This.GenerateRegions_Subclass[joInput]"
+    }
+
+}
+
+
+objectdef windowLayoutGenerator_Combo inherits windowLayoutGenerator
+{
+    method Initialize()
+    {
+        Name:Set[Combo]
+        Description:Set["Generates a layout composed of multiple other layouts! Layoutception."]
+    }
+
+    method AddLayout(uint numLayout, jsonvalueref ja, jsonvalueref joCombo, jsonvalueref joInput)
+    {
+;        echo "Combo:AddLayout ${joInput.Type} ${joInput~}"
+        variable weakref wlGenerator
+        wlGenerator:SetReference["WLEngine.Generators.GetGenerator[\"${joInput.Get[generator]~}\"]"]
+        
+        variable jsonvalue joMerged="${joCombo~}"
+        joMerged:Erase[layouts]
+        joMerged:Merge[joInput]
+
+;        echo "merged=${joMerged~}"
+
+        variable jsonvalue jaRegions        
+        jaRegions:SetValue["${wlGenerator.GenerateRegions["joMerged"]~}"]
+        jaRegions:ForEach["ForEach.Value:SetInteger[numLayout,${numLayout}]"]
+
+;        echo "result=${jaRegions~}"
+
+        if ${jaRegions.Type~.Equal[Array]}
+        {
+            jaRegions:ForEach["ja:AddByRef[ForEach.Value]"]
+        }
+    }
+
+    member:jsonvalueref GenerateRegions(jsonvalueref joInput)
+    {
+        variable jsonvalue ja="[]"
+
+        variable uint numLayout
+
+        variable jsonvalueref joLayout
+        
+;        echo "Combo:GenerateRegions ${joInput~}"
+        joInput.Get[layouts]:ForEach["This:AddLayout[\${ForEach.Key},ja,joInput,ForEach.Value]"]
+
+;        echo "Combo:GenerateRegions result=${ja~}"
+        return ja
     }
 
 }
@@ -549,7 +600,7 @@ objectdef windowLayoutGenerator_Grid inherits windowLayoutGenerator_Common
         if ${gridSizeY}<1
             gridSizeY:Set[1]
         
-        echo Grid size ${gridSizeX}x${gridSizeY}
+;        echo Grid size ${gridSizeX}x${gridSizeY}
 
         variable uint nX
         variable uint nY

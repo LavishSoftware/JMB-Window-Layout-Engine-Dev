@@ -35,8 +35,8 @@ objectdef windowLayoutEngine
         
         jo:SetString["itemType","screen"]
         jo:SetString["name","${joMonitor.Get[name]~}"]
-        jo:SetInteger["x",${joMonitor.GetInteger[x]}]
-        jo:SetInteger["y",${joMonitor.GetInteger[y]}]
+        jo:SetInteger["left",${joMonitor.GetInteger[left]}]
+        jo:SetInteger["top",${joMonitor.GetInteger[top]}]
         jo:SetInteger["width",${joMonitor.GetInteger[width]}]
         jo:SetInteger["height",${joMonitor.GetInteger[height]}]
 
@@ -47,7 +47,14 @@ objectdef windowLayoutEngine
     {
         variable jsonvalue jo="${joRegion.AsJSON~}"
 
-        jo:SetString["itemType","region"]
+        if ${joRegion.Has[numLayout]}
+        {
+            jo:SetString["itemType","region${joRegion.GetInteger[numLayout]}"]
+        }
+        else
+        {
+            jo:SetString["itemType","region"]
+        }
         ja:AddByRef[jo]
     }
 
@@ -161,6 +168,52 @@ objectdef windowLayoutEngine
         testData.Get[monitors]:Add["${joNextMonitor~}"]
 
         This:AddLayout["ScreenPer","ScreenPer",testData,"${Generators.ScreenPer.GenerateRegions["testData"]~}"]
+
+        This:LoadComboTests
+    }
+
+    method LoadComboTests()
+    {
+        variable jsonvalue monitor2
+
+        monitor2:SetValue["$$>
+        {
+            "id":1,
+            "primary":false,
+            "left":1920,"right":3840,"top":0,"bottom":1080,"width":1920,"height":1080,
+            "maximizeLeft":1920,"maximizeRight":3840,"maximizeTop":0,"maximizeBottom":1040,"maximizeWidth":1920,"maximizeHeight":1040
+        }
+        <$$"]
+        monitor2:SetString[name,"\\\\.\\DISPLAY2"]
+
+        variable jsonvalue testData
+        testData:SetValue["$$>
+        {
+            "layouts":[
+                {
+                    "useMonitor":1,
+                    "generator":"Edge"
+                },
+                {
+                    "useMonitor":2,
+                    "generator":"Edge"
+                }
+            ],
+            "numSlots":5,
+            "avoidTaskbar":false,
+            "leaveHole":true,
+            "edge":"bottom",
+            "rows":4,
+            "columns":2
+            "monitors":[
+                ${Display.Monitor.AsJSON~},
+                ${monitor2.AsJSON~}                
+            ]
+        }
+        <$$"]
+
+        This:AddLayout["Combo","Combo",testData,"${Generators.Combo.GenerateRegions["testData"]~}"]
+
     }
 }
 
