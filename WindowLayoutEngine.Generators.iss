@@ -19,6 +19,7 @@ objectdef windowLayoutGenerators
     variable windowLayoutGenerator_Edge Edge
     variable windowLayoutGenerator_Stacked Stacked    
     variable windowLayoutGenerator_ScreenPer ScreenPer    
+    variable windowLayoutGenerator_Tile Tile    
 
     variable collection:weakref Generators
 
@@ -27,6 +28,7 @@ objectdef windowLayoutGenerators
         Generators:Set["${Edge~}",Edge]
         Generators:Set["${Stacked~}",Stacked]
         Generators:Set["${ScreenPer~}",ScreenPer]
+        Generators:Set["${Tile~}",Tile]
 ;        Generators:Set["${Horizontal~}",Horizontal]
 ;        Generators:Set["${Vertical~}",Vertical]
     }
@@ -434,6 +436,92 @@ objectdef windowLayoutGenerator_Edge inherits windowLayoutGenerator_Common
             joRegion:SetInteger[numRegion,${numSlot.Inc}]
             ja:Add["${joRegion~}"]
             useY:Inc["${smallHeight}"]
+        }
+
+        return ja
+    }
+}
+
+objectdef windowLayoutGenerator_Tile inherits windowLayoutGenerator_Common
+{
+    method Initialize()
+    {
+        Name:Set[Tile]
+        Description:Set["Generates a layout where all windows are tiled"]
+    }
+
+    member:uint GetSquareSize(uint numRegions)
+    {
+        ; find the best square
+        ; size: max regions
+        ; 2: 4
+        ; 3: 9
+        ; 4: 16
+        ; 5: 25
+        ; 6: 36
+        ; 7: 49
+        ; 8: 64
+        ;echo GetSquareSize[${numRegions}]
+        variable uint squareSize=1
+
+        while ${squareSize}*${squareSize} < ${numRegions}
+        {
+            squareSize:Inc
+        }
+
+        return ${squareSize}
+    }
+
+    member:jsonvalueref GenerateRegions_Subclass(jsonvalueref joInput)
+    {
+        variable jsonvalue ja="[]"
+        variable jsonvalue joRegion
+
+
+        variable uint squareSize
+        squareSize:Set[${This.GetSquareSize[${numSlots}]}]
+        if !${squareSize}
+            return NULL
+
+        variable uint nX
+        variable uint nY
+
+        variable uint smallHeight
+        variable uint smallWidth            
+
+        variable int posX
+        variable int posY
+
+        smallWidth:Set["${monitorWidth}/${squareSize}"]
+        smallHeight:Set["${monitorHeight}/${squareSize}"]
+
+        variable uint numSlot
+
+        joRegion:SetValue["$$>
+            {
+                "x":${monitorX},
+                "y":${monitorY},
+                "width":${smallWidth},
+                "height":${smallHeight}
+            }
+        <$$"]
+
+        for (nY:Set[0] ; ${nY} < ${squareSize} ; nY:Inc )
+        {
+            for (nX:Set[0] ; ${nX} < ${squareSize} ; nX:Inc )
+            {
+                numSlot:Inc
+                if ${numSlot} > ${numSlots}
+                    break
+                joRegion:SetInteger[x,${monitorX.Inc[${nX} * ${smallWidth}]}]
+                joRegion:SetInteger[y,${monitorY.Inc[${nY} * ${smallHeight}]}]
+                joRegion:SetInteger[numRegion,${numSlot}]
+                ja:Add["${joRegion~}"]
+
+            }
+
+            if ${numSlot} > ${numSlots}
+                break
         }
 
         return ja

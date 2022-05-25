@@ -96,7 +96,7 @@ objectdef windowLayoutEngine
         if !${joLayout.Reference(exists)}
             return NULL
 
-        echo GetPreviewItems element=${element}
+;        echo GetPreviewItems element=${element}
         if ${element.Element(exists)}
         {
             variable jsonvalue jaExtents
@@ -139,6 +139,8 @@ objectdef windowLayoutEngine
         This:AddLayout["Left","Edge",testData,"${Generators.Edge.GenerateRegions["testData"]~}"]
 
         This:AddLayout["Stacked","Stacked",testData,"${Generators.Stacked.GenerateRegions["testData"]~}"]
+
+        This:AddLayout["Tile","Tile",testData,"${Generators.Tile.GenerateRegions["testData"]~}"]
 
         variable jsonvalue joNextMonitor
         joNextMonitor:SetValue["$$>
