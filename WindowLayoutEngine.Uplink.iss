@@ -3,7 +3,10 @@
 objectdef windowLayoutEngine
 {
     variable windowLayoutGenerators Generators
+    variable jsonvalue GeneratorSettings="{}"
     variable jsonvalue Layouts="[]"
+
+    variable jsonvalueref ActiveLayout
 
     method Initialize()
     {
@@ -15,6 +18,34 @@ objectdef windowLayoutEngine
     method Shutdown()
     {
         LGUI2:UnloadPackageFile[WindowLayoutEngine.Uplink.lgui2Package.json]
+    }
+
+    method Event_OnSessionStartup(string sessionName)
+    {        
+        relay "${sessionName~}" "WLEngine:SetLayout[\"${ActiveLayout.AsJSON~}\"]"
+    }
+
+    method Event_OnSessionShutdown(string sessionName)
+    {
+
+    }
+
+    method GenerateLayouts()
+    {
+        
+    }
+
+    method ActivateLayout(jsonvalueref newValue)
+    {
+        ActiveLayout:SetReference[newValue]
+        LGUI2.Element["windowLayoutEngine.events"]:FireEventHandler[activeLayoutChanged]
+        echo relay "all local" "WLEngine:SetLayout[\"${newValue.AsJSON~}\"]"
+        relay "all local" "WLEngine:SetLayout[\"${newValue.AsJSON.Escape[1]~}\"]"
+    }
+
+    method SelectLayout(uint numLayout)
+    {
+        This:ActivateLayout["Layouts[${numLayout}]"]
     }
 
     method AddLayout(string name, string generator, jsonvalueref inputData, jsonvalue regions)
@@ -212,8 +243,37 @@ objectdef windowLayoutEngine
         }
         <$$"]
 
-        This:AddLayout["Combo","Combo",testData,"${Generators.Combo.GenerateRegions["testData"]~}"]
+        This:AddLayout["Combo 1","Combo",testData,"${Generators.Combo.GenerateRegions["testData"]~}"]
 
+        testData:Set["layouts","$$>
+        [
+                {
+                    "useMonitor":1,
+                    "generator":"Edge"
+                },
+                {
+                    "useMonitor":2,
+                    "generator":"Tile"
+                }            
+        ]
+        <$$"]
+
+        This:AddLayout["Combo 2","Combo",testData,"${Generators.Combo.GenerateRegions["testData"]~}"]
+        
+        testData:Set["layouts","$$>
+        [
+                {
+                    "useMonitor":1,
+                    "generator":"Grid"
+                },
+                {
+                    "useMonitor":2,
+                    "generator":"Edge"
+                }            
+        ]
+        <$$"]
+
+        This:AddLayout["Combo 3","Combo",testData,"${Generators.Combo.GenerateRegions["testData"]~}"]
     }
 }
 

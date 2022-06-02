@@ -1,0 +1,165 @@
+{
+    "$schema": "http://www.lavishsoft.com/schema/lgui2Package.json",
+    "elements":[
+        {
+            "type":"panel",
+            "visibility": "hidden",
+            "name":"windowLayoutEngine.events"
+        },
+        {
+            "type":"window",
+            "name":"windowLayoutEngine.mainWindow",
+            "title":"Joe Multiboxer: Window Layout Engine Development",
+            "hideOnClose": true,
+            "horizontalAlignment": "center",
+            "verticalAlignment": "center",
+            "width":600,
+            "content":{
+                "type":"dockpanel",
+                "horizontalAlignment": "stretch",
+                "-verticalAlignment": "stretch",                
+                "children":[
+                    {
+                        "type":"button",
+                        "_dock":"bottom",
+                        "horizontalAlignment": "right",
+                        "content":"Apply",
+                        "eventHandlers": {
+                            "onRelease":{
+                                "type":"code",
+                                "code":"WLEngine:Apply"
+                            }
+                        }
+                    },
+                    {
+                        "type":"objectview",
+                        "_dock":"top",
+                        "objectBinding": {
+                            "pullFormat":"${WLEngine}"
+                        },
+                        "horizontalAlignment": "stretch",
+                        "properties": [
+                            {
+                                "name":"Foreground?",                                
+                                "dataBinding":{
+                                    "pullFormat": "${Display.Window.IsForeground}"
+                                },
+                                "editTemplate": "propertyview.checkbox"
+                            },
+                            {
+                                "name":"Client Position",
+                                "dataBinding":{
+                                    "pullFormat": "${Display.ViewableX},${Display.ViewableY}"
+                                },
+                                "editTemplate": "propertyview.textblock"
+                            },
+                            {
+                                "name":"Client Size",
+                                "dataBinding":{
+                                    "pullFormat": "${Display.ViewableWidth}x${Display.ViewableHeight}"
+                                },
+                                "editTemplate": "propertyview.textblock"
+                            },
+                            {
+                                "name":"Render Size",                                
+                                "dataBinding":{
+                                    "pullFormat": "${Display.Width}x${Display.Height}"
+                                },
+                                "editTemplate": "propertyview.textblock"
+                            },
+                            {
+                                "name":"Render Size Matches Client?",                                
+                                "dataBinding":{
+                                    "pullFormat": "${WLEngine.RenderSizeMatchesClient}"
+                                },
+                                "editTemplate": "propertyview.textblock"
+                            },
+                            {
+                                "name":"Render Size Matches Reset?",                                
+                                "dataBinding":{
+                                    "pullFormat": "${WLEngine.RenderSizeMatchesReset}"
+                                },
+                                "editTemplate": "propertyview.textblock"
+                            }
+                        ]
+                    },
+                    {
+                        "type":"objectview",
+                        "_dock":"top",
+                        "objectBinding": {
+                            "pullFormat":"${WLEngine}"
+                        },
+                        "horizontalAlignment": "stretch",
+                        "properties": [
+                            {
+                                "name":"Active Window",                                
+                                "dataBinding":{
+                                    "pullFormat": "${WLEngine.Active}",
+                                    "pushFormat":["WLEngine:SetActiveStatus[\"","\"]"]
+                                },
+                                "editTemplate": "propertyview.checkbox"
+                            },
+                            {
+                                "name":"Reset Region",                                
+                                "dataBinding":{
+                                    "pullFormat": "${WLEngine.NumResetRegion}",
+                                    "pushFormat":["WLEngine:SelectResetRegion[\"","\"]"],
+                                    "pushNumeric":true
+                                },
+                                "editTemplate": "propertyview.textbox",
+                                "controlData": {
+                                    "textBindingUsesFocus":true
+                                }
+                            },
+                            {
+                                "name":"Reset Region Data",                                
+                                "dataBinding":{
+                                    "pullFormat": "${WLEngine.ResetRegion}"
+                                },
+                                "editTemplate": "propertyview.textbox"
+                            },
+                            {
+                                "name":"Active Region",                                
+                                "dataBinding":{
+                                    "pullFormat": "${WLEngine.NumActiveRegion}",
+                                    "pushFormat":["WLEngine:SelectActiveRegion[\"","\"]"],
+                                    "pushNumeric":true
+                                },
+                                "editTemplate": "propertyview.textbox",
+                                "controlData": {
+                                    "textBindingUsesFocus":true
+                                }
+                            },
+                            {
+                                "name":"Active Region Data",                                
+                                "dataBinding":{
+                                    "pullFormat": "${WLEngine.ActiveRegion}"
+                                },
+                                "editTemplate": "propertyview.textbox"
+                            },
+                            {
+                                "name":"Inactive Region",                                
+                                "dataBinding":{
+                                    "pullFormat": "${WLEngine.NumInactiveRegion}",
+                                    "pushFormat":["WLEngine:SelectInactiveRegion[\"","\"]"],
+                                    "pushNumeric":true
+                                },
+                                "editTemplate": "propertyview.textbox",
+                                "controlData": {
+                                    "textBindingUsesFocus":true
+                                }
+                            },
+                            {
+                                "name":"Inactive Region Data",                                
+                                "dataBinding":{
+                                    "pullFormat": "${WLEngine.InactiveRegion}"
+                                },
+                                "editTemplate": "propertyview.textbox"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ]
+}

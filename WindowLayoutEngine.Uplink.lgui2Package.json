@@ -65,7 +65,7 @@
                 "color":"#ffffff"
             },
             "strata": 0.4
-        },        
+        },
         "windowLayoutEngine.layoutView":{
             "jsonTemplate":"listboxitem",
             "padding":2,
@@ -76,18 +76,15 @@
                     {
                         "_dock":"left",
                         "type":"textblock",
-                        "text":"Layout ${This.Context.Index}: "
-                    },
-                    {
-                        "_dock":"left",
-                        "type":"textblock",
-                        "text":"${This.Context.Data.Get[name]}"
+                        "text":"Layout ${This.Context.Index}: ${This.Context.Data.Get[name]}",
+                        "minSize":[120,0]
                     },
                     {
                         "_dock":"right",
                         "type":"map",
-                        "width":400,
-                        "height":200,
+                        "-width":400,
+                        "horizontalAlignment":"stretch",
+                        "height":100,
                         "fixedAspectRatio":true,
                         "virtualLocation":[0,0],
                         "virtualSize":[1920,1080],
@@ -145,29 +142,151 @@
             "hideOnClose": true,
             "horizontalAlignment": "center",
             "verticalAlignment": "center",
-            "width":500,
-            "height":300,
+            "width":600,
+            "height":400,
             "content":{
                 "type":"dockpanel",
                 "horizontalAlignment": "stretch",
                 "verticalAlignment": "stretch",                
                 "children":[
                     {
-                        "type":"listbox",
-                        "contentContainer":{
-                            "jsonTemplate":"listbox.contentContainerFitWidth"
-                        },
-                        "horizontalAlignment":"stretch",
-                        "verticalAlignment":"stretch",
-                        "itemsBinding":{
-                            "pullFormat":"${WLEngine.Layouts}"
-                        },
-                        "itemViewGenerators":{
-                            "default":{
-                                "type":"template",
-                                "template":"windowLayoutEngine.layoutView"
+                        "type":"dragger",
+                        "width":350,
+                        "allowMove":false,
+                        "allowSize":true,
+                        "borderThickness":[0,0,5,0],
+                        "borderBrush":{"color":"#ffffff"},
+                        "content":{
+                            "type":"listbox",
+                            "name":"listLayouts",
+                            "_dock":"bottom",
+                            "contentContainer":{
+                                "jsonTemplate":"listbox.contentContainerFitWidth"
+                            },
+                            "horizontalAlignment":"stretch",
+                            "itemsBinding":{
+                                "pullFormat":"${WLEngine.Layouts}"
+                            },
+                            "itemViewGenerators":{
+                                "default":{
+                                    "type":"template",
+                                    "template":"windowLayoutEngine.layoutView"
+                                }
                             }
                         }
+                    },
+                    {
+                        "type":"dockpanel",
+                        "_dock":"right",
+                        "children":[
+                            {
+                                "type":"objectview",
+                                "_dock":"top",
+                                "objectBinding": {
+                                    "pullFormat":"${WLEngine.GeneratorSettings}"
+                                },
+                                "properties": [
+                                    {
+                                        "name":"Generator",
+                                        "dataBinding":{
+                                            "pullFormat":"${_CONTEXT_.Object.Get[generator]}",
+                                            "pullReplaceNull":"",
+                                            "pushFormat":["_CONTEXT_.Object:SetString[generator,\"","\"]"]
+                                        },
+                                        "editTemplate":"propertyview.textbox"          
+                                    },
+                                    {
+                                        "name":"Avoid Taskbar",
+                                        "dataBinding":{
+                                            "pullFormat":"${_CONTEXT_.Object.Get[avoidTaskbar]}",
+                                            "pullReplaceNull":"",
+                                            "pushFormat":["_CONTEXT_.Object:SetString[avoidTaskbar,\"","\"]"]
+                                        },
+                                        "editTemplate":"propertyview.checkbox"          
+                                    },
+                                    {
+                                        "name":"Leave Hole",
+                                        "dataBinding":{
+                                            "pullFormat":"${_CONTEXT_.Object.Get[leaveHole]}",
+                                            "pullReplaceNull":"",
+                                            "pushFormat":["_CONTEXT_.Object:SetString[leaveHole,\"","\"]"]
+                                        },
+                                        "editTemplate":"propertyview.checkbox"          
+                                    },
+                                    {
+                                        "name":"Number of Slots",
+                                        "dataBinding":{
+                                            "pullFormat":"${_CONTEXT_.Object.Get[numSlots]}",
+                                            "pullReplaceNull":"",
+                                            "pushFormat":["_CONTEXT_.Object:SetInteger[numSlots,\"","\"]"]
+                                        },
+                                        "editTemplate":"propertyview.textbox"
+                                    },
+                                    {
+                                        "name":"Number of Inactive Windows",
+                                        "dataBinding":{
+                                            "pullFormat":"${_CONTEXT_.Object.Get[numInactiveWindows]}",
+                                            "pullReplaceNull":"",
+                                            "pushFormat":["_CONTEXT_.Object:SetInteger[numInactiveWindows,\"","\"]"]
+                                        },
+                                        "editTemplate":"propertyview.textbox"
+                                    },
+                                    {
+                                        "name":"Edge",
+                                        "dataBinding":{
+                                            "pullFormat":"${_CONTEXT_.Object.Get[edge]}",
+                                            "pullReplaceNull":"",
+                                            "pushFormat":["_CONTEXT_.Object:SetString[edge,\"","\"]"]
+                                        },
+                                        "editTemplate":"propertyview.textbox"          
+                                    },
+                                    {
+                                        "name":"Rows",
+                                        "dataBinding":{
+                                            "pullFormat":"${_CONTEXT_.Object.Get[rows]}",
+                                            "pullReplaceNull":"",
+                                            "pushFormat":["_CONTEXT_.Object:SetInteger[rows,\"","\"]"]
+                                        },
+                                        "editTemplate":"propertyview.textbox"
+                                    },
+                                    {
+                                        "name":"Columns",
+                                        "dataBinding":{
+                                            "pullFormat":"${_CONTEXT_.Object.Get[columns]}",
+                                            "pullReplaceNull":"",
+                                            "pushFormat":["_CONTEXT_.Object:SetInteger[columns,\"","\"]"]
+                                        },
+                                        "editTemplate":"propertyview.textbox"
+                                    }
+                                ]
+                            },
+                            {
+                                "type":"button",
+                                "_dock":"top",
+                                "horizontalAlignment":"right",
+                                "content":"Generate",
+                                "margin":3,
+                                "eventHandlers":{
+                                    "onPress":{
+                                        "type":"code",
+                                        "code":"WLEngine:GenerateLayouts"
+                                    }
+                                }
+                            },
+                            {
+                                "type":"button",
+                                "_dock":"bottom",
+                                "horizontalAlignment":"right",
+                                "content":"Activate Selected Layout",
+                                "margin":3,
+                                "eventHandlers":{
+                                    "onPress":{
+                                        "type":"code",
+                                        "code":"WLEngine:SelectLayout[\"${LGUI2.Element[listLayouts].SelectedItem.Index}\"]"
+                                    }
+                                }
+                            }
+                        ]
                     }
                 ]
             }
